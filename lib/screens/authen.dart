@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ung_ubru/screens/my_service.dart';
 
 class Authen extends StatefulWidget {
   @override
@@ -8,14 +10,75 @@ class Authen extends StatefulWidget {
 class _AuthenState extends State<Authen> {
   // Explicit
   Color myColor = Colors.green.shade900;
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  String email = '', password = '';
+  final formKey = GlobalKey<FormState>();
 
   // Method
 
   Widget loginButton() {
     return FloatingActionButton(
       backgroundColor: myColor,
-      child: Icon(Icons.navigate_next, size: 36.0,),
-      onPressed: () {},
+      child: Icon(
+        Icons.navigate_next,
+        size: 36.0,
+      ),
+      onPressed: () {
+        formKey.currentState.save();
+        print('email = $email, password = $password');
+        checkAuthen();
+      },
+    );
+  }
+
+  Future<void> checkAuthen() async {
+    await firebaseAuth
+        .signInWithEmailAndPassword(email: email, password: password)
+        .then((response) {
+      MaterialPageRoute materialPageRoute =
+          MaterialPageRoute(builder: (BuildContext context) => MyService());
+      Navigator.of(context).pushAndRemoveUntil(
+          materialPageRoute, (Route<dynamic> route) => false);
+    }).catchError((response) {
+      String title = response.code;
+      String message = response.message;
+      myAlert(title, message);
+    });
+  }
+
+  void myAlert(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: showTitle(title),
+          content: Text(message),
+          actions: <Widget>[okButton()],
+        );
+      },
+    );
+  }
+
+  Widget okButton() {
+    return FlatButton(
+      child: Text('OK'),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
+  Widget showTitle(String title) {
+    return ListTile(
+      leading: Icon(
+        Icons.add_alert,
+        color: Colors.red,
+        size: 48.0,
+      ),
+      title: Text(
+        title,
+        style: TextStyle(color: Colors.red),
+      ),
     );
   }
 
@@ -44,6 +107,9 @@ class _AuthenState extends State<Authen> {
         labelText: 'Email :',
         labelStyle: TextStyle(color: myColor),
       ),
+      onSaved: (String value) {
+        email = value;
+      },
     );
   }
 
@@ -59,6 +125,9 @@ class _AuthenState extends State<Authen> {
         labelText: 'Password :',
         labelStyle: TextStyle(color: myColor),
       ),
+      onSaved: (String value) {
+        password = value;
+      },
     );
   }
 
@@ -70,7 +139,7 @@ class _AuthenState extends State<Authen> {
         color: myColor,
       ),
       title: Text(
-        'Tum  UBRU',
+        'Tum UBRU',
         style: TextStyle(
           fontSize: 30.0,
           color: myColor,
@@ -91,14 +160,17 @@ class _AuthenState extends State<Authen> {
         padding: EdgeInsets.all(20.0),
         color: Color.fromRGBO(255, 255, 255, 0.7),
         width: 300.0,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            showName(),
-            emailText(),
-            passwordText(),
-          ],
+        child: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              showName(),
+              emailText(),
+              passwordText(),
+            ],
+          ),
         ),
       ),
     );
