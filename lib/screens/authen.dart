@@ -10,6 +10,15 @@ class _AuthenState extends State<Authen> {
   Color myColor = Colors.green.shade900;
 
   // Method
+
+  Widget loginButton() {
+    return FloatingActionButton(
+      backgroundColor: myColor,
+      child: Icon(Icons.navigate_next, size: 36.0,),
+      onPressed: () {},
+    );
+  }
+
   Widget backButton() {
     return IconButton(
       icon: Icon(
@@ -25,6 +34,7 @@ class _AuthenState extends State<Authen> {
 
   Widget emailText() {
     return TextFormField(
+      keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         icon: Icon(
           Icons.email,
@@ -38,7 +48,8 @@ class _AuthenState extends State<Authen> {
   }
 
   Widget passwordText() {
-    return TextFormField(obscureText: true,
+    return TextFormField(
+      obscureText: true,
       decoration: InputDecoration(
         icon: Icon(
           Icons.lock,
@@ -59,7 +70,7 @@ class _AuthenState extends State<Authen> {
         color: myColor,
       ),
       title: Text(
-        'Ung UBRU',
+        'Tum  UBRU',
         style: TextStyle(
           fontSize: 30.0,
           color: myColor,
@@ -104,6 +115,7 @@ class _AuthenState extends State<Authen> {
           ],
         ),
       ),
+      floatingActionButton: loginButton(),
     );
   }
 }
