@@ -90,12 +90,10 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-  
-
 
   Widget showAppName() {
     return Text(
-      'Tum UBRU',
+      'Ung UBRU',
       style: TextStyle(
         fontSize: 35.0,
         fontWeight: FontWeight.bold,
